@@ -82,4 +82,22 @@ describe("toRpn", () => {
   it("evaluates an addition", () => {
     expect(toRpn("1 + 2").eval()).toBe(3);
   });
+  it("evaluates multiplication before addition", () => {
+    expect(toRpn("1 + 2 * 3").eval()).toBe(7);
+  });
+  it("evaluates equal operators from the left", () => {
+    expect(toRpn("8 / 2 / 2").eval()).toBe(2);
+  });
+  it("evaluates exponents from the right", () => {
+    expect(toRpn("2 ^ 3 ^ 2").eval()).toBe(512);
+  });
+  it("evaluates an exponent before the sign in front of it", () => {
+    expect(toRpn("-2 ^ 2").eval()).toBe(-4);
+  });
+  it("evaluates a subtracted negative decimal", () => {
+    expect(toRpn("1 - -2.5").eval()).toBe(3.5);
+  });
+  it("evaluates nested groups", () => {
+    expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))").eval()).toBe(3.5);
+  });
 });
