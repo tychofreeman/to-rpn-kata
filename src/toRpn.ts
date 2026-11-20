@@ -11,7 +11,7 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
       throw new Error('expected a number or "(" but reached the end');
     }
     let operand: string;
-    const token = tokenizer.next_token();
+    const token = tokenizer.next_operand();
     if (token.text === '(') {
       operand = expression(tokenizer, token.position);
     } else if (token.is_number()) {
@@ -96,6 +96,18 @@ class Tokenizer {
     this.skip_whitespace();
     return token;
   }
+
+  next_operand(): Token {
+    this.skip_whitespace();
+    if (this.s[this.i] !== '-' || !/[0-9]/.test(this.s[this.i + 1])) {
+      return this.next_token();
+    }
+    const position = this.i;
+    const sign = this.read_one();
+    const token = new Token(sign + this.read_number(), position);
+    this.skip_whitespace();
+    return token;
+  }
 }
 
 function empty(): OperatorStack {
@@ -156,7 +168,7 @@ class Token {
     return false;
   }
   is_number(): boolean {
-    return /^[0-9]+(\.[0-9]+)?$/.test(this.text);
+    return /^-?[0-9]+(\.[0-9]+)?$/.test(this.text);
   }
 }
 

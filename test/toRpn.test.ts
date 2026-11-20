@@ -64,4 +64,7 @@ describe("toRpn", () => {
   it("reads a number with a decimal point", () => {
     expect(toRpn("1.5 + 2")).toBe("1.5 2+");
   });
+  it("reads a minus sign directly before a number as part of it", () => {
+    expect(toRpn("-1 + 2")).toBe("-1 2+");
+  });
 });
