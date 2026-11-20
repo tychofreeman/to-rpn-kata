@@ -1,12 +1,15 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   let left_operand = tokenizer.next_token();
+  let pending = "";
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
+    left_operand += pending;
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand;
-    left_operand += operator;
+    pending = operator;
   }
+  left_operand += pending;
   return left_operand;
 }
 
