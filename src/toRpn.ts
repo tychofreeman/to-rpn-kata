@@ -28,6 +28,9 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
     }
     const operator = tokenizer.next_token();
     if (operator.text === ')') {
+      if (opened_at === undefined) {
+        throw new Error(`found ")" at position ${operator.position} with no "(" to close`);
+      }
       break;
     }
     if (!operator.is_operator()) {

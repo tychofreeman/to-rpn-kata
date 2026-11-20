@@ -58,4 +58,7 @@ describe("toRpn", () => {
   it("refuses a group that is never closed", () => {
     expect(() => toRpn("(1 + 2")).toThrow(new Error('expected ")" to close the "(" at position 0 but reached the end'));
   });
+  it("refuses a closing parenthesis that closes nothing", () => {
+    expect(() => toRpn("1 + 2) * 3")).toThrow(new Error('found ")" at position 5 with no "(" to close'));
+  });
 });
