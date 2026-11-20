@@ -55,7 +55,9 @@ An npm project named `to-rpn` on Node 24, TypeScript, tests run by Vitest
 
 ## 1. One number, one operator
 
-1.1 **test** `toRpn("1")` is `"1"`.
+1.1 **test** `toRpn("1")` is `"1"`. Create `src/toRpn.ts` too, with a `toRpn`
+that throws `new Error("not implemented")`, so the test compiles and fails
+when it runs.
 
 1.2 **pass** Return the constant `"1"`.
 
@@ -346,8 +348,9 @@ token's text and position.
 
 9.6 **pin** `"   "` throws the same message.
 
-9.7 **refactor** Extract that check and the read as a function
-`operand_token(tokenizer)`.
+9.7 **refactor** Extract the end-of-input check and the read as a function
+`operand_token(tokenizer)`. The check that the token is a number or opens a
+group stays in `expression`.
 
 9.8 **test** `"1 2"` throws `expected an operator but found "2" at position 2`.
 
@@ -397,7 +400,8 @@ written with no space: `-1 + 2` is `1CHS 2+`.
 10.5 **pass** Add `CHS` to the table with precedence 3, grouping from the
 right, and raise `^` to 4. While the operand's token is `-`, push
 `new Operator("CHS", token.position)` on `pending` and read the next operand
-token.
+token with `operand_token`; this loop comes before the check that the token
+is a number or opens a group.
 
 10.6 **pin** `"1 - -2.5"` is `"1 2.5CHS-"`; `"-(1 + 2)"` is `"1 2+CHS"`;
 `"-2 ^ 2"` is `"2 2^CHS"`; `"-2 * 3"` is `"2CHS 3*"`.
