@@ -70,4 +70,13 @@ describe("toRpn", () => {
   it("tells a subtraction from the sign of the number after it", () => {
     expect(toRpn("1 - -2.5")).toBe("1 2.5CHS-");
   });
+  it("changes the sign of a group", () => {
+    expect(toRpn("-(1 + 2)")).toBe("1 2+CHS");
+  });
+  it("applies an exponent before the sign in front of it", () => {
+    expect(toRpn("-2 ^ 2")).toBe("2 2^CHS");
+  });
+  it("applies the sign before a multiplication that follows", () => {
+    expect(toRpn("-2 * 3")).toBe("2CHS 3*");
+  });
 });
