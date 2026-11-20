@@ -34,6 +34,9 @@ describe("toRpn", () => {
   it("applies an exponent before the multiplication and the addition it follows", () => {
     expect(toRpn("1 + 2 * 3 ^ 4")).toBe("1 2 3 4^*+");
   });
+  it("groups repeated exponents from the right", () => {
+    expect(toRpn("2 ^ 3 ^ 2")).toBe("2 3 2^^");
+  });
   it.skip("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
   });

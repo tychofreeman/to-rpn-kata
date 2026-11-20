@@ -82,7 +82,13 @@ class OperatorStack {
 
   yields_to(operator: Operator): boolean {
     const top = this.top();
-    return top !== undefined && top.precedence() < operator.precedence();
+    if (top === undefined) {
+      return false;
+    }
+    if (top.precedence() === operator.precedence()) {
+      return operator.groups_from_right();
+    }
+    return top.precedence() < operator.precedence();
   }
 
   has_any(): boolean {
@@ -111,6 +117,9 @@ class Operator extends Token {
   }
   precedence(): number {
     return precedences[this.text];
+  }
+  groups_from_right(): boolean {
+    return this.text === '^';
   }
 }
 
