@@ -14,16 +14,20 @@ class Tokenizer {
 
   next_token() {
     let token = "";
-    const is_number = /[0-9]/.test(this.s[this.i]);
+    const is_number = this.is_digit();
     do {
       token += this.s[this.i];
       this.i++;
-    } while (is_number && /[0-9]/.test(this.s[this.i]));
+    } while (is_number && this.is_digit());
     return token;
   }
   private i = 0;
 
   end() {
     return this.i >= this.s.length;
+  }
+
+  is_digit() {
+    return /[0-9]/.test(this.s[this.i]);
   }
 }
