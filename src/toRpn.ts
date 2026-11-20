@@ -110,6 +110,12 @@ class Operator extends Token {
     return true;
   }
   precedence(): number {
-    return this.text === '*' || this.text === '/' ? 2 : 1;
+    return precedences[this.text];
   }
 }
+
+const precedences: Record<string, number> = {
+  '+': 1,
+  '*': 2,
+  '/': 2,
+};
