@@ -1,7 +1,7 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   let left_operand = tokenizer.next_token();
-  if (!tokenizer.end()) {
+  while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand + operator;
@@ -14,10 +14,9 @@ class Tokenizer {
 
   next_token() {
     while (this.is_whitespace()) this.i++;
-    if (!this.is_digit()) {
-      return this.read_one();
-    }
-    return this.read_number();
+    const token = this.is_digit() ? this.read_number() : this.read_one();
+    while (this.is_whitespace()) this.i++;
+    return token;
   }
 
   private read_number() {

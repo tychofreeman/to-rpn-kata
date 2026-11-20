@@ -19,6 +19,9 @@ describe("toRpn", () => {
   it("skips runs of several spaces", () => {
     expect(toRpn("  12   +  3  ")).toBe("12 3+");
   });
+  it("chains several operators from left to right", () => {
+    expect(toRpn("1 + 2 + 4 + 5")).toBe("1 2+ 4+ 5+");
+  });
   it.skip("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
   });
