@@ -4,16 +4,16 @@ export function toRpn(s: string): string {
   let pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
-    if (top(pending) === '+' && operator === '*') {
-      pending = push(pending, operator);
+    if (pending.top() === '+' && operator === '*') {
+      pending = pending.push(operator);
     } else {
-      left_operand += written(pending);
-      pending = push(empty(), operator);
+      left_operand += pending.written();
+      pending = empty().push(operator);
     }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand;
   }
-  left_operand += written(pending);
+  left_operand += pending.written();
   return left_operand;
 }
 
@@ -59,18 +59,22 @@ class Tokenizer {
   }
 }
 
-function push(held: string[], operator: string): string[] {
-  return [...held, operator];
+function empty(): OperatorStack {
+  return new OperatorStack([]);
 }
 
-function empty(): string[] {
-  return [];
-}
+class OperatorStack {
+  constructor(readonly held: string[]) {}
 
-function top(held: string[]): string {
-  return held[held.length - 1];
-}
+  top(): string {
+    return this.held[this.held.length - 1];
+  }
 
-function written(held: string[]): string {
-  return held.toReversed().join("");
+  push(operator: string): OperatorStack {
+    return new OperatorStack([...this.held, operator]);
+  }
+
+  written(): string {
+    return this.held.toReversed().join("");
+  }
 }
