@@ -57,6 +57,12 @@ class Tokenizer {
     while (this.is_digit()) {
       token += this.read_one();
     }
+    if (this.s[this.i] === '.') {
+      token += this.read_one();
+      while (this.is_digit()) {
+        token += this.read_one();
+      }
+    }
     return token;
   }
   private i = 0;
@@ -147,7 +153,7 @@ class Token {
     return false;
   }
   is_number(): boolean {
-    return /^[0-9]+$/.test(this.text);
+    return /^[0-9]+(\.[0-9]+)?$/.test(this.text);
   }
 }
 

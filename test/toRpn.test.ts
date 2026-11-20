@@ -61,4 +61,7 @@ describe("toRpn", () => {
   it("refuses a closing parenthesis that closes nothing", () => {
     expect(() => toRpn("1 + 2) * 3")).toThrow(new Error('found ")" at position 5 with no "(" to close'));
   });
+  it("reads a number with a decimal point", () => {
+    expect(toRpn("1.5 + 2")).toBe("1.5 2+");
+  });
 });
