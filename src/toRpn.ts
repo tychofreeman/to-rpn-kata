@@ -1,5 +1,5 @@
 export function toRpn(s: string): string {
-  const left_operand = read_left_operand(s);
+  const left_operand = next_token(s);
   const operator = s[1];
   const right_operand = s[2];
   if (s.length === 1) {
@@ -8,8 +8,8 @@ export function toRpn(s: string): string {
   return left_operand + ' ' + right_operand + operator;
 }
 
-function read_left_operand(s: string) {
+function next_token(s: string) {
   const i = 0;
-  const left_operand = s[i];
-  return left_operand;
+  const token = s[i];
+  return token;
 }
