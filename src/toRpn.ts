@@ -53,6 +53,7 @@ class Tokenizer {
   private i = 0;
 
   end() {
+    this.skip_whitespace();
     return this.i >= this.s.length;
   }
 

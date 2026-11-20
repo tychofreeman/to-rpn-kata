@@ -49,4 +49,7 @@ describe("toRpn", () => {
   it("refuses an operator with nothing after it", () => {
     expect(() => toRpn("1 +")).toThrow(new Error('expected a number or "(" but reached the end'));
   });
+  it("refuses text that is only spaces", () => {
+    expect(() => toRpn("   ")).toThrow(new Error('expected a number or "(" but reached the end'));
+  });
 });
