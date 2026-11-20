@@ -3,7 +3,7 @@ export function toRpn(s: string): string {
   const left_operand = tokenizer.next_token();
   const operator = tokenizer.next_token();
   const right_operand = tokenizer.next_token();
-  if (s.length === 1) {
+  if (tokenizer.end()) {
     return left_operand;
   }
   return left_operand + ' ' + right_operand + operator;
@@ -18,4 +18,8 @@ class Tokenizer {
     return token;
   }
   private i = 0;
+
+  end() {
+    return this.s.length === 1;
+  }
 }
