@@ -40,7 +40,7 @@ describe("toRpn", () => {
   it("treats a parenthesized sum as one operand", () => {
     expect(toRpn("(1 + 2) * 3")).toBe("1 2+ 3*");
   });
-  it.skip("converts a parenthesized infix expression to RPN", () => {
-    expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
+  it("converts a parenthesized infix expression to RPN", () => {
+    expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+ 4 9-* 1+ 5+ 1 5-/");
   });
 });
