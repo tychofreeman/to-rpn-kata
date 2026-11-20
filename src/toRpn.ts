@@ -14,6 +14,7 @@ class Tokenizer {
 
   next_token() {
     const token = this.s[this.i];
+    this.i++;
     return token;
   }
   private i = 0;
