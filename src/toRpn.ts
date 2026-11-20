@@ -8,6 +8,9 @@ function expression(tokenizer: Tokenizer) {
   const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
+    if (operator.text === ')') {
+      break;
+    }
     while (pending.has_any() && !pending.yields_to(operator)) {
       rpn += pending.pop().text;
     }
@@ -145,5 +148,9 @@ const operators: Record<string, OperatorFacts> = {
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
 
 function read_operand(tokenizer: Tokenizer): string {
-  return tokenizer.next_token().text;
+  const token = tokenizer.next_token();
+  if (token.text === '(') {
+    return expression(tokenizer);
+  }
+  return token.text;
 }
