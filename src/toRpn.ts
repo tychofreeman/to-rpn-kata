@@ -16,7 +16,7 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
     if (token.text === '(') {
       expression(tokenizer, token.position, calculator);
     } else if (token.is_number()) {
-      calculator.enter(token.text);
+      calculator.enter(token);
     } else {
       throw new Error(`expected a number or "(" but found "${token.text}" at position ${token.position}`);
     }
@@ -37,11 +37,13 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
       throw new Error(`expected an operator but found "${operator.text}" at position ${operator.position}`);
     }
     while (pending.has_any() && !pending.yields_to(operator)) {
-      calculator.press(pending.pop().text);
+      calculator.press(pending.pop());
     }
     pending.push(operator);
   }
-  calculator.press(pending.written());
+  while (pending.has_any()) {
+    calculator.press(pending.pop());
+  }
 }
 
 function operand_token(tokenizer: Tokenizer) {
@@ -120,14 +122,6 @@ class OperatorStack {
     this.held.push(operator);
   }
 
-  written(): string {
-    let text = "";
-    while (this.has_any()) {
-      text += this.pop().text;
-    }
-    return text;
-  }
-
   yields_to(operator: Operator): boolean {
     const top = this.top();
     if (top === undefined) {
@@ -200,17 +194,25 @@ function token_of(text: string, position: number): Token {
 }
 
 export class Calculator {
-  private keys = "";
+  private readonly keys: Token[] = [];
 
-  enter(number: string): void {
-    this.keys += (this.keys === "" ? "" : " ") + number;
+  enter(number: Token): void {
+    this.keys.push(number);
   }
 
-  press(operators: string): void {
-    this.keys += operators;
+  press(operator: Operator): void {
+    this.keys.push(operator);
   }
 
   toString(): string {
-    return this.keys;
+    let text = "";
+    for (const key of this.keys) {
+      if (key.is_operator()) {
+        text += key.text;
+      } else {
+        text += (text === "" ? "" : " ") + key.text;
+      }
+    }
+    return text;
   }
 }
