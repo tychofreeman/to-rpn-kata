@@ -112,14 +112,19 @@ class Token {
 }
 
 class Operator extends Token {
+  private readonly facts: OperatorFacts;
+  constructor(text: string) {
+    super(text);
+    this.facts = operators[text];
+  }
   is_operator(): boolean {
     return true;
   }
   precedence(): number {
-    return operators[this.text].precedence;
+    return this.facts.precedence;
   }
   groups_from_right(): boolean {
-    return operators[this.text].groups_from_right;
+    return this.facts.groups_from_right;
   }
 }
 
