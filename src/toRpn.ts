@@ -176,18 +176,27 @@ class Operator extends Token {
   groups_from_right(): boolean {
     return this.facts.groups_from_right;
   }
+  apply(stack: number[]): void {
+    const operands = stack.splice(-this.facts.operands);
+    stack.push(this.facts.calculate(...operands));
+  }
 }
 
 const operators: Record<string, OperatorFacts> = {
-  '+': { precedence: 1, groups_from_right: false },
-  '-': { precedence: 1, groups_from_right: false },
-  '*': { precedence: 2, groups_from_right: false },
-  '/': { precedence: 2, groups_from_right: false },
-  'CHS': { precedence: 3, groups_from_right: true },
-  '^': { precedence: 4, groups_from_right: true },
+  '+': { precedence: 1, groups_from_right: false, operands: 2, calculate: (a, b) => a + b },
+  '-': { precedence: 1, groups_from_right: false, operands: 2, calculate: (a, b) => a - b },
+  '*': { precedence: 2, groups_from_right: false, operands: 2, calculate: (a, b) => a * b },
+  '/': { precedence: 2, groups_from_right: false, operands: 2, calculate: (a, b) => a / b },
+  'CHS': { precedence: 3, groups_from_right: true, operands: 1, calculate: (a) => -a },
+  '^': { precedence: 4, groups_from_right: true, operands: 2, calculate: (a, b) => a ** b },
 };
 
-type OperatorFacts = { precedence: number; groups_from_right: boolean };
+type OperatorFacts = {
+  precedence: number;
+  groups_from_right: boolean;
+  operands: number;
+  calculate: (...operands: number[]) => number;
+};
 
 function token_of(text: string, position: number): Token {
   return text in operators ? new Operator(text, position) : new Token(text, position);
@@ -214,5 +223,17 @@ export class Calculator {
       }
     }
     return text;
+  }
+
+  eval(): number {
+    const stack: number[] = [];
+    for (const key of this.keys) {
+      if (key.is_operator()) {
+        key.apply(stack);
+      } else {
+        stack.push(Number(key.text));
+      }
+    }
+    return stack[0];
   }
 }

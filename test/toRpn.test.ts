@@ -79,4 +79,7 @@ describe("toRpn", () => {
   it("applies the sign before a multiplication that follows", () => {
     expect(toRpn("-2 * 3").toString()).toBe("2CHS 3*");
   });
+  it("evaluates an addition", () => {
+    expect(toRpn("1 + 2").eval()).toBe(3);
+  });
 });
