@@ -7,11 +7,8 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
   let rpn = "";
   const pending = empty();
   while (true) {
-    if (tokenizer.end()) {
-      throw new Error('expected a number or "(" but reached the end');
-    }
     let operand: string;
-    const token = tokenizer.next_operand();
+    const token = operand_token(tokenizer);
     if (token.text === '(') {
       operand = expression(tokenizer, token.position);
     } else if (token.is_number()) {
@@ -43,6 +40,14 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
   }
   rpn += pending.written();
   return rpn;
+}
+
+function operand_token(tokenizer: Tokenizer) {
+  if (tokenizer.end()) {
+    throw new Error('expected a number or "(" but reached the end');
+  }
+  const token = tokenizer.next_operand();
+  return token;
 }
 
 class Tokenizer {
