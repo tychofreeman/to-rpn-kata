@@ -116,6 +116,7 @@ class Operator extends Token {
 
 const precedences: Record<string, number> = {
   '+': 1,
+  '-': 1,
   '*': 2,
   '/': 2,
 };

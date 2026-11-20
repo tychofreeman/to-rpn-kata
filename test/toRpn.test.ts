@@ -28,6 +28,9 @@ describe("toRpn", () => {
   it("applies a multiplication and a division from left to right before an addition", () => {
     expect(toRpn("1 + 2 * 3 / 4")).toBe("1 2 3* 4/+");
   });
+  it("applies a multiplication before the subtraction it follows", () => {
+    expect(toRpn("1 - 2 * 3")).toBe("1 2 3*-");
+  });
   it.skip("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
   });
