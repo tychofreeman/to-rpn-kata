@@ -1,6 +1,6 @@
-export function toRpn(s: string): string {
+export function toRpn(s: string): Calculator {
   const tokenizer = new Tokenizer(s);
-  return expression(tokenizer, undefined);
+  return new Calculator(expression(tokenizer, undefined));
 }
 
 function expression(tokenizer: Tokenizer, opened_at: number | undefined): string {
@@ -199,4 +199,12 @@ type OperatorFacts = { precedence: number; groups_from_right: boolean };
 
 function token_of(text: string, position: number): Token {
   return text in operators ? new Operator(text, position) : new Token(text, position);
+}
+
+export class Calculator {
+  constructor(private readonly keys: string) {}
+
+  toString(): string {
+    return this.keys;
+  }
 }
