@@ -20,13 +20,6 @@ export function toRpn(s: string): string {
 class Tokenizer {
   constructor(readonly s: string) {}
 
-  next_text() {
-    this.skip_whitespace();
-    const token = this.is_digit() ? this.read_number() : this.read_one();
-    this.skip_whitespace();
-    return token;
-  }
-
   private skip_whitespace() {
     while (this.is_whitespace()) this.i++;
   }
@@ -59,7 +52,10 @@ class Tokenizer {
   }
 
   next_token(): Token {
-    return new Token(this.next_text());
+    this.skip_whitespace();
+    const token = this.is_digit() ? new Token(this.read_number()) : new Operator(this.read_one());
+    this.skip_whitespace();
+    return token;
   }
 }
 
@@ -85,4 +81,13 @@ class OperatorStack {
 
 class Token {
   constructor(readonly text: string) {}
+  is_operator(): boolean {
+    return false;
+  }
+}
+
+class Operator extends Token {
+  is_operator(): boolean {
+    return true;
+  }
 }
