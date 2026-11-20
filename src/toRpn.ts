@@ -8,8 +8,8 @@ export function toRpn(s: string): string {
       rpn += pending.written();
     }
     pending.push(operator);
-    const right_operand = tokenizer.next_token();
-    rpn += ' ' + right_operand.text;
+    const operand = tokenizer.next_token();
+    rpn += ' ' + operand.text;
   }
   rpn += pending.written();
   return rpn;
