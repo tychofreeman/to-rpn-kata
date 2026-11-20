@@ -67,7 +67,8 @@ class Tokenizer {
 
   next_token(): Token {
     this.skip_whitespace();
-    const token = this.is_digit() ? new Token(this.read_number()) : token_of(this.read_one());
+    const position = this.i;
+    const token = this.is_digit() ? new Token(this.read_number(), position) : token_of(this.read_one(), position);
     this.skip_whitespace();
     return token;
   }
@@ -121,10 +122,12 @@ class OperatorStack {
 }
 
 class Token {
-  constructor(text: string) {
+  constructor(text: string, position: number) {
     this.text = text;
+    this.position = position;
   }
   readonly text: string;
+  readonly position: number;
   is_operator(): this is Operator {
     return false;
   }
@@ -132,8 +135,8 @@ class Token {
 
 class Operator extends Token {
   private readonly facts: OperatorFacts;
-  constructor(text: string) {
-    super(text);
+  constructor(text: string, position: number) {
+    super(text, position);
     this.facts = operators[text];
   }
   is_operator(): this is Operator {
@@ -157,6 +160,6 @@ const operators: Record<string, OperatorFacts> = {
 
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
 
-function token_of(text: string): Token {
-  return text in operators ? new Operator(text) : new Token(text);
+function token_of(text: string, position: number): Token {
+  return text in operators ? new Operator(text, position) : new Token(text, position);
 }
