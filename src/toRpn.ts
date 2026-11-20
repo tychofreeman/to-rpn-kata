@@ -7,6 +7,9 @@ function expression(tokenizer: Tokenizer): string {
   let rpn = "";
   const pending = empty();
   while (true) {
+    if (tokenizer.end()) {
+      throw new Error('expected a number or "(" but reached the end');
+    }
     let operand: string;
     const token = tokenizer.next_token();
     if (token.text === '(') {

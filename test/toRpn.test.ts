@@ -46,4 +46,7 @@ describe("toRpn", () => {
   it("refuses an operator where an operand should be", () => {
     expect(() => toRpn("+ 1")).toThrow(new Error('expected a number or "(" but found "+" at position 0'));
   });
+  it("refuses an operator with nothing after it", () => {
+    expect(() => toRpn("1 +")).toThrow(new Error('expected a number or "(" but reached the end'));
+  });
 });
