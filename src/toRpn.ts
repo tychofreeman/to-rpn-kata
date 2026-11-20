@@ -4,7 +4,8 @@ export function toRpn(s: string): string {
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
     const right_operand = tokenizer.next_token();
-    left_operand += ' ' + right_operand + operator;
+    left_operand += ' ' + right_operand;
+    left_operand += operator;
   }
   return left_operand;
 }
