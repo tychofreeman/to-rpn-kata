@@ -13,7 +13,7 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    if (this.is_whitespace()) this.i++;
+    while (this.is_whitespace()) this.i++;
     if (!this.is_digit()) {
       return this.read_one();
     }
