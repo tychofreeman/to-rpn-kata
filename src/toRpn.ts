@@ -16,10 +16,10 @@ class Tokenizer {
     let token = "";
     const is_number = this.is_digit();
     if (!is_number) {
-      return this.next_char();
+      return this.read_one();
     }
     do {
-      token += this.next_char();
+      token += this.read_one();
     } while (is_number && this.is_digit());
     return token;
   }
@@ -33,7 +33,7 @@ class Tokenizer {
     return /[0-9]/.test(this.s[this.i]);
   }
 
-  next_char() {
+  read_one() {
     const char = this.s[this.i];
     this.i++;
     return char;
