@@ -1,14 +1,14 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   let left_operand = tokenizer.next_token().text;
-  let pending = empty();
+  const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
     if (pending.yields_to(operator)) {
-      pending = pending.push(operator);
+      pending.push(operator);
     } else {
       left_operand += pending.written();
-      pending = empty().push(operator);
+      pending.push(operator);
     }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand.text;
@@ -70,9 +70,8 @@ class OperatorStack {
     return this.held[this.held.length - 1];
   }
 
-  push(operator: Operator): OperatorStack {
+  push(operator: Operator): void {
     this.held.push(operator);
-    return this;
   }
 
   written(): string {
