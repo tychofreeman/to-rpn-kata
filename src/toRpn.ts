@@ -20,6 +20,6 @@ class Tokenizer {
   private i = 0;
 
   end() {
-    return this.s.length === 1;
+    return this.i >= this.s.length;
   }
 }
