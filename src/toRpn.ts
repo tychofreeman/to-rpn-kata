@@ -1,6 +1,7 @@
 export function toRpn(s: string): string {
-  const i = 0;
+  let i = 0;
   const left_operand = s[i];
+  i++;
   const operator = s[1];
   const right_operand = s[2];
   if (s.length === 1) {
