@@ -116,19 +116,19 @@ class Operator extends Token {
     return true;
   }
   precedence(): number {
-    return precedences[this.text].precedence;
+    return operators[this.text].precedence;
   }
   groups_from_right(): boolean {
-    return this.text === '^';
+    return operators[this.text].groups_from_right;
   }
 }
 
-const precedences: Record<string, OperatorFacts> = {
+const operators: Record<string, OperatorFacts> = {
   '+': { precedence: 1, groups_from_right: false },
   '-': { precedence: 1, groups_from_right: false },
   '*': { precedence: 2, groups_from_right: false },
   '/': { precedence: 2, groups_from_right: false },
-  '^': { precedence: 3, groups_from_right: false },
+  '^': { precedence: 3, groups_from_right: true },
 };
 
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
