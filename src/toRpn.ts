@@ -13,8 +13,8 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    const i = 0;
-    const token = this.s[i];
+    const token = this.s[this.i];
     return token;
   }
+  private i = 0;
 }
