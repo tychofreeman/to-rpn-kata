@@ -1,9 +1,9 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
-  return expression(tokenizer);
+  return expression(tokenizer, undefined);
 }
 
-function expression(tokenizer: Tokenizer): string {
+function expression(tokenizer: Tokenizer, opened_at: number | undefined): string {
   let rpn = "";
   const pending = empty();
   while (true) {
@@ -13,7 +13,7 @@ function expression(tokenizer: Tokenizer): string {
     let operand: string;
     const token = tokenizer.next_token();
     if (token.text === '(') {
-      operand = expression(tokenizer);
+      operand = expression(tokenizer, token.position);
     } else if (token.is_number()) {
       operand = token.text;
     } else {
@@ -21,6 +21,9 @@ function expression(tokenizer: Tokenizer): string {
     }
     rpn += (rpn === "" ? "" : " ") + operand;
     if (tokenizer.end()) {
+      if (opened_at !== undefined) {
+        throw new Error(`expected ")" to close the "(" at position ${opened_at} but reached the end`);
+      }
       break;
     }
     const operator = tokenizer.next_token();

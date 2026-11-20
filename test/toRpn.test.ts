@@ -55,4 +55,7 @@ describe("toRpn", () => {
   it("refuses two operands with no operator between them", () => {
     expect(() => toRpn("1 2")).toThrow(new Error('expected an operator but found "2" at position 2'));
   });
+  it("refuses a group that is never closed", () => {
+    expect(() => toRpn("(1 + 2")).toThrow(new Error('expected ")" to close the "(" at position 0 but reached the end'));
+  });
 });
