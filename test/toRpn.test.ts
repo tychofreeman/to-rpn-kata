@@ -37,6 +37,9 @@ describe("toRpn", () => {
   it("groups repeated exponents from the right", () => {
     expect(toRpn("2 ^ 3 ^ 2")).toBe("2 3 2^^");
   });
+  it.skip("treats a parenthesized sum as one operand", () => {
+    expect(toRpn("(1 + 2) * 3")).toBe("1 2+ 3*");
+  });
   it.skip("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
   });

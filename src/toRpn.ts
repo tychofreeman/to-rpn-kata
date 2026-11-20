@@ -1,5 +1,9 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
+  return expression(tokenizer);
+}
+
+function expression(tokenizer: Tokenizer) {
   let rpn = tokenizer.next_token().text;
   const pending = empty();
   while (!tokenizer.end()) {
@@ -105,7 +109,10 @@ class OperatorStack {
 }
 
 class Token {
-  constructor(readonly text: string) {}
+  constructor(text: string) {
+    this.text = text;
+  }
+  readonly text: string;
   is_operator(): boolean {
     return false;
   }
