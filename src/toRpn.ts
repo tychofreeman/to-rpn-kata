@@ -75,7 +75,11 @@ class OperatorStack {
   }
 
   written(): string {
-    return this.held.toReversed().map((operator) => operator.text).join("");
+    let text = "";
+    for (let top = this.held.pop(); top !== undefined; top = this.held.pop()) {
+      text += top.text;
+    }
+    return text;
   }
 
   yields_to(operator: Operator): boolean {
