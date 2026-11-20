@@ -16,15 +16,29 @@ note it.
   then refactor. Refactor only while every test passes.
 - A stage's "before" refactorings come before its first test: make the change
   easy, then make the change.
-- A refactoring changes no test and no behavior. If a tool can make it, use the
-  tool; if you edit by hand, keep the edit small and run the tests.
+- A refactoring changes no test and no behavior. If a refactoring tool can make
+  it, it must (see "The tools").
 - Commit after every green step.
 - Names: functions, methods and variables in `snake_case`, classes in
   `PascalCase`.
 
-If you perform this with refactoring tools, keep a log per step: the tool
-calls, each refusal with its text, and each change made by hand because no tool
-made it.
+## The tools
+
+This kata is performed with the gorefactor refactoring tools
+(go-refactor-mcp). That is a requirement, not an option:
+
+- Read TypeScript only with `inspect`, and change it only through the tools.
+- A **refactor** step is made with refactorings: extract, inline, fold,
+  rename, move, a change of signature, and the like, which the tool checks.
+  Restating code with an edit tool (`replace_statements`,
+  `replace_declaration`, `replace_expression`, `replace_text`) counts as an
+  edit by hand, even though a tool wrote it.
+- Before an edit by hand in a refactor step, look for a sequence of two or
+  three refactorings that composes to the change (a method written with
+  `add_declaration`, then `fold` onto it, is one). Only when none does, make
+  the smallest edit that does it.
+- Keep a log with one entry per step: the tool calls, each refusal with its
+  text, and each edit by hand with the sequences tried and why each failed.
 
 ## Setup
 

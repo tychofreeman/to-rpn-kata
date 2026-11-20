@@ -15,17 +15,30 @@ note it.
   - **test**: add the test. It must fail.
   - **pass**: write the least code that makes it pass. Every test passes after.
   - **refactor**: change no test and no behavior. Every test passes after. If a
-    tool can make the change, use the tool; if you edit by hand, keep the edit
-    small.
+    refactoring tool can make the change, it must (see "The tools").
   - **pin**: add the tests. They should pass at once; if one fails, stop and
     find out why before changing code.
 - Commit after every step that ends green.
 - Names: functions, methods and variables in `snake_case`, classes in
   `PascalCase`. Use the names given, so later steps can refer to them.
 
-If you perform this with refactoring tools, keep a log per step: the tool
-calls, each refusal with its text, and each change made by hand because no tool
-made it.
+## The tools
+
+This kata is performed with the gorefactor refactoring tools
+(go-refactor-mcp). That is a requirement, not an option:
+
+- Read TypeScript only with `inspect`, and change it only through the tools.
+- A **refactor** step is made with refactorings: extract, inline, fold,
+  rename, move, a change of signature, and the like, which the tool checks.
+  Restating code with an edit tool (`replace_statements`,
+  `replace_declaration`, `replace_expression`, `replace_text`) counts as an
+  edit by hand, even though a tool wrote it.
+- Before an edit by hand in a refactor step, look for a sequence of two or
+  three refactorings that composes to the change (a method written with
+  `add_declaration`, then `fold` onto it, is one). Only when none does, make
+  the smallest edit that does it.
+- Keep a log with one entry per step: the tool calls, each refusal with its
+  text, and each edit by hand with the sequences tried and why each failed.
 
 ## Setup
 
