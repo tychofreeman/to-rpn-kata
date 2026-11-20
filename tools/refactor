@@ -1,0 +1,43 @@
+#!/bin/sh
+# The gorefactor tools from the command line, for a session with no MCP
+# server: tools/refactor <tool> key=value... | '<json>' | -   (as refactor).
+# Each call passes the kata's gate first and is recorded (kata/gate.mjs);
+# .kata/calls.log keeps every call's arguments and output.
+# Needs refactor and refactor-mcp on PATH, and node.
+dir=$(cd "$(dirname "$0")" && pwd)
+root=$(cd "$dir/.." && pwd)
+gate="$root/kata/gate.mjs"
+mkdir -p "$root/.kata"
+log="$root/.kata/calls.log"
+tool=$1
+in=$(mktemp); out=$(mktemp); asked=$(mktemp)
+reads=no
+for a in "$@"; do case "$a" in -|*=-) reads=yes;; esac; done
+if [ $reads = yes ]; then cat > "$in"; fi
+{ shift; for a in "$@"; do printf '%s\n' "$a"; done; printf '%s\n' "--stdin--"; cat "$in"; } > "$asked"
+set -- "$tool" "$@"
+if node "$gate" cli "$tool" "$asked" > "$out" 2>&1; then
+  if [ "$tool" = check ]; then
+    # The command line's check runs Go's tests; the server's knows TypeScript.
+    tests=false; for a in "$@"; do [ "$a" = run_tests=true ] && tests=true; done
+    echo "[{\"tool\":\"check\",\"args\":{\"run_tests\":$tests}}]" |
+      node "$dir/mcpcall.mjs" -C "$root" call 2>&1 | sed 1d > "$out"
+    if grep -q -E '^(TESTS FAILED|TYPE-CHECK FAILED|REFUSED|ERROR)' "$out"; then status=1; else status=0; fi
+  else
+    refactor -C "$root" "$@" < "$in" > "$out" 2>&1
+    status=$?
+  fi
+else
+  status=2; gated=yes
+fi
+{
+  echo "=== $(date -u +%H:%M:%S) $*"
+  if [ -s "$in" ]; then echo "--- stdin"; cat "$in"; echo; fi
+  echo "--- exit $status"
+  cat "$out"
+  echo
+} >> "$log"
+[ "$gated" = yes ] || node "$gate" logcli "$tool" "$status" "$(grep -m1 . "$out")" 2>/dev/null
+cat "$out"
+rm -f "$in" "$out" "$asked"
+exit $status

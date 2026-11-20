@@ -1,0 +1,45 @@
+{
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "mcp__gorefactor",
+      "Bash(node kata/gate.mjs:*)",
+      "Bash(tools/refactor:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Bash",
+        "hooks": [{ "type": "command", "command": "read-guard" }]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [{ "type": "command", "command": "write-guard" }]
+      },
+      {
+        "matcher": "mcp__gorefactor__.*",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/kata/gate.mjs\" hook" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__gorefactor__.*",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/kata/gate.mjs\" log" }]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "mcp__gorefactor__.*",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/kata/gate.mjs\" log" }]
+      }
+    ]
+  }
+}
