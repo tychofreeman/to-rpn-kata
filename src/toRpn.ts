@@ -4,8 +4,8 @@ export function toRpn(s: string): string {
   const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
-    if (!pending.yields_to(operator)) {
-      rpn += pending.written();
+    while (pending.has_any() && !pending.yields_to(operator)) {
+      rpn += pending.pop().text;
     }
     pending.push(operator);
     const operand = tokenizer.next_token();
@@ -82,6 +82,18 @@ class OperatorStack {
 
   yields_to(operator: Operator): boolean {
     return this.top()?.text === '+' && operator.text === '*';
+  }
+
+  has_any(): boolean {
+    return this.held.length > 0;
+  }
+
+  pop(): Operator {
+    const top = this.held.pop();
+    if (top === undefined) {
+      throw new Error("the operator stack is empty");
+    }
+    return top;
   }
 }
 
