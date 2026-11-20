@@ -13,8 +13,12 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    const token = this.s[this.i];
-    this.i++;
+    let token = "";
+    const is_number = /[0-9]/.test(this.s[this.i]);
+    do {
+      token += this.s[this.i];
+      this.i++;
+    } while (is_number && /[0-9]/.test(this.s[this.i]));
     return token;
   }
   private i = 0;
