@@ -71,7 +71,8 @@ class OperatorStack {
   }
 
   push(operator: Operator): OperatorStack {
-    return new OperatorStack([...this.held, operator]);
+    this.held.push(operator);
+    return this;
   }
 
   written(): string {
