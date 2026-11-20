@@ -43,4 +43,7 @@ describe("toRpn", () => {
   it("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+ 4 9-* 1+ 5+ 1 5-/");
   });
+  it("refuses an operator where an operand should be", () => {
+    expect(() => toRpn("+ 1")).toThrow(new Error('expected a number or "(" but found "+" at position 0'));
+  });
 });

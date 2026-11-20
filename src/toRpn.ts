@@ -11,8 +11,10 @@ function expression(tokenizer: Tokenizer): string {
     const token = tokenizer.next_token();
     if (token.text === '(') {
       operand = expression(tokenizer);
-    } else {
+    } else if (token.is_number()) {
       operand = token.text;
+    } else {
+      throw new Error(`expected a number or "(" but found "${token.text}" at position ${token.position}`);
     }
     rpn += (rpn === "" ? "" : " ") + operand;
     if (tokenizer.end()) {
@@ -130,6 +132,9 @@ class Token {
   readonly position: number;
   is_operator(): this is Operator {
     return false;
+  }
+  is_number(): boolean {
+    return /^[0-9]+$/.test(this.text);
   }
 }
 
