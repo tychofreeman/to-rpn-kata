@@ -1,17 +1,17 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
-  let left_operand = tokenizer.next_token();
+  let left_operand = tokenizer.next_token().text;
   let pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
-    if (pending.top() === '+' && operator === '*') {
-      pending = pending.push(operator);
+    if (pending.top() === '+' && operator.text === '*') {
+      pending = pending.push(operator.text);
     } else {
       left_operand += pending.written();
-      pending = empty().push(operator);
+      pending = empty().push(operator.text);
     }
     const right_operand = tokenizer.next_token();
-    left_operand += ' ' + right_operand;
+    left_operand += ' ' + right_operand.text;
   }
   left_operand += pending.written();
   return left_operand;
@@ -20,7 +20,7 @@ export function toRpn(s: string): string {
 class Tokenizer {
   constructor(readonly s: string) {}
 
-  next_token() {
+  next_text() {
     this.skip_whitespace();
     const token = this.is_digit() ? this.read_number() : this.read_one();
     this.skip_whitespace();
@@ -57,6 +57,10 @@ class Tokenizer {
   is_whitespace() {
     return ' ' === this.s[this.i];
   }
+
+  next_token(): Token {
+    return new Token(this.next_text());
+  }
 }
 
 function empty(): OperatorStack {
@@ -77,4 +81,8 @@ class OperatorStack {
   written(): string {
     return this.held.toReversed().join("");
   }
+}
+
+class Token {
+  constructor(readonly text: string) {}
 }
