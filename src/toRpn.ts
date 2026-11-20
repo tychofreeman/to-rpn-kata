@@ -4,7 +4,13 @@ export function toRpn(s: string): string {
 }
 
 function expression(tokenizer: Tokenizer) {
-  let rpn = read_operand(tokenizer);
+  let rpn: string;
+  const token = tokenizer.next_token();
+  if (token.text === '(') {
+    rpn = expression(tokenizer);
+  } else {
+    rpn = token.text;
+  }
   const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
@@ -15,7 +21,14 @@ function expression(tokenizer: Tokenizer) {
       rpn += pending.pop().text;
     }
     pending.push(operator);
-    rpn += ' ' + read_operand(tokenizer);
+    let operand: string;
+    const token = tokenizer.next_token();
+    if (token.text === '(') {
+      operand = expression(tokenizer);
+    } else {
+      operand = token.text;
+    }
+    rpn += ' ' + operand;
   }
   rpn += pending.written();
   return rpn;
@@ -146,11 +159,3 @@ const operators: Record<string, OperatorFacts> = {
 };
 
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
-
-function read_operand(tokenizer: Tokenizer): string {
-  const token = tokenizer.next_token();
-  if (token.text === '(') {
-    return expression(tokenizer);
-  }
-  return token.text;
-}
