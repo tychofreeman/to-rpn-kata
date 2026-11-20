@@ -21,16 +21,12 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
       throw new Error(`expected a number or "(" but found "${token.text}" at position ${token.position}`);
     }
     if (tokenizer.end()) {
-      if (opened_at !== undefined) {
-        throw new Error(`expected ")" to close the "(" at position ${opened_at} but reached the end`);
-      }
+      input_ended(opened_at);
       break;
     }
     const operator = tokenizer.next_token();
     if (operator.closes_group()) {
-      if (opened_at === undefined) {
-        throw new Error(`found ")" at position ${operator.position} with no "(" to close`);
-      }
+      closed_by(opened_at, operator);
       break;
     }
     if (!operator.is_operator()) {
@@ -43,6 +39,18 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
   }
   while (pending.has_any()) {
     calculator.press(pending.pop());
+  }
+}
+
+function input_ended(opened_at: number | undefined) {
+  if (opened_at !== undefined) {
+    throw new Error(`expected ")" to close the "(" at position ${opened_at} but reached the end`);
+  }
+}
+
+function closed_by(opened_at: number | undefined, operator: Token) {
+  if (opened_at === undefined) {
+    throw new Error(`found ")" at position ${operator.position} with no "(" to close`);
   }
 }
 
