@@ -3,5 +3,7 @@ export function toRpn(s: string): string {
   if (s.length === 1) {
     return left_operand;
   }
-  return left_operand + ' ' + s[2] + s[1];
+  const operator = s[1];
+  const right_operand = s[2];
+  return left_operand + ' ' + right_operand + operator;
 }
