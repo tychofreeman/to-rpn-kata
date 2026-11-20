@@ -52,4 +52,7 @@ describe("toRpn", () => {
   it("refuses text that is only spaces", () => {
     expect(() => toRpn("   ")).toThrow(new Error('expected a number or "(" but reached the end'));
   });
+  it("refuses two operands with no operator between them", () => {
+    expect(() => toRpn("1 2")).toThrow(new Error('expected an operator but found "2" at position 2'));
+  });
 });

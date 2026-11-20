@@ -24,8 +24,11 @@ function expression(tokenizer: Tokenizer): string {
       break;
     }
     const operator = tokenizer.next_token();
-    if (!operator.is_operator()) {
+    if (operator.text === ')') {
       break;
+    }
+    if (!operator.is_operator()) {
+      throw new Error(`expected an operator but found "${operator.text}" at position ${operator.position}`);
     }
     while (pending.has_any() && !pending.yields_to(operator)) {
       rpn += pending.pop().text;
