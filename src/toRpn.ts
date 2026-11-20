@@ -53,15 +53,18 @@ class Tokenizer {
   }
 
   private read_number() {
+    let token = this.read_digits();
+    if (this.s[this.i] === '.') {
+      token += this.read_one();
+      token += this.read_digits();
+    }
+    return token;
+  }
+
+  private read_digits() {
     let token = "";
     while (this.is_digit()) {
       token += this.read_one();
-    }
-    if (this.s[this.i] === '.') {
-      token += this.read_one();
-      while (this.is_digit()) {
-        token += this.read_one();
-      }
     }
     return token;
   }
