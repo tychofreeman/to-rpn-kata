@@ -1,23 +1,19 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   let left_operand = tokenizer.next_token();
-  const pending: string[] = [];
+  let pending = "";
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
-    if (pending.at(-1) === '+' && operator === '*') {
-      pending.push(operator);
+    if (pending === '+' && operator === '*') {
+      pending = operator + pending;
     } else {
-      while (pending.length > 0) {
-        left_operand += pending.pop();
-      }
-      pending.push(operator);
+      left_operand += pending;
+      pending = operator;
     }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand;
   }
-  while (pending.length > 0) {
-    left_operand += pending.pop();
-  }
+  left_operand += pending;
   return left_operand;
 }
 
