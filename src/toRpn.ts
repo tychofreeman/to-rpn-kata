@@ -5,24 +5,8 @@ export function toRpn(s: string): string {
 
 function expression(tokenizer: Tokenizer): string {
   let rpn = "";
-  let operand: string;
-  const token = tokenizer.next_token();
-  if (token.text === '(') {
-    operand = expression(tokenizer);
-  } else {
-    operand = token.text;
-  }
-  rpn += (rpn === "" ? "" : " ") + operand;
   const pending = empty();
-  while (!tokenizer.end()) {
-    const operator = tokenizer.next_token();
-    if (!operator.is_operator()) {
-      break;
-    }
-    while (pending.has_any() && !pending.yields_to(operator)) {
-      rpn += pending.pop().text;
-    }
-    pending.push(operator);
+  while (true) {
     let operand: string;
     const token = tokenizer.next_token();
     if (token.text === '(') {
@@ -31,6 +15,17 @@ function expression(tokenizer: Tokenizer): string {
       operand = token.text;
     }
     rpn += (rpn === "" ? "" : " ") + operand;
+    if (tokenizer.end()) {
+      break;
+    }
+    const operator = tokenizer.next_token();
+    if (!operator.is_operator()) {
+      break;
+    }
+    while (pending.has_any() && !pending.yields_to(operator)) {
+      rpn += pending.pop().text;
+    }
+    pending.push(operator);
   }
   rpn += pending.written();
   return rpn;
