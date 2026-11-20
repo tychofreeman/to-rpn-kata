@@ -16,8 +16,8 @@ class Tokenizer {
     let token = "";
     const is_number = this.is_digit();
     do {
-      token += this.s[this.i];
-      this.i++;
+      const char = this.next_char();
+      token += char;
     } while (is_number && this.is_digit());
     return token;
   }
@@ -29,5 +29,11 @@ class Tokenizer {
 
   is_digit() {
     return /[0-9]/.test(this.s[this.i]);
+  }
+
+  next_char() {
+    const char = this.s[this.i];
+    this.i++;
+    return char;
   }
 }
