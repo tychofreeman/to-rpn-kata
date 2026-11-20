@@ -93,8 +93,8 @@ class OperatorStack {
 
   written(): string {
     let text = "";
-    for (let top = this.held.pop(); top !== undefined; top = this.held.pop()) {
-      text += top.text;
+    while (this.has_any()) {
+      text += this.pop().text;
     }
     return text;
   }
