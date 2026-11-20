@@ -22,6 +22,9 @@ describe("toRpn", () => {
   it("chains several operators from left to right", () => {
     expect(toRpn("1 + 2 + 4 + 5")).toBe("1 2+ 4+ 5+");
   });
+  it("applies a multiplication before the addition it follows", () => {
+    expect(toRpn("1 + 2 * 3")).toBe("1 2 3*+");
+  });
   it.skip("converts a parenthesized infix expression to RPN", () => {
     expect(toRpn("(((1+3)*(4-9)+1+5)/(1-5))")).toBe("1 3+4 9-*1+5+ 1 5-/");
   });

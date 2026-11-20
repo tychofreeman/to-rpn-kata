@@ -4,10 +4,14 @@ export function toRpn(s: string): string {
   let pending = "";
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
-    left_operand += pending;
+    if (pending === '+' && operator === '*') {
+      pending = operator + pending;
+    } else {
+      left_operand += pending;
+      pending = operator;
+    }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand;
-    pending = operator;
   }
   left_operand += pending;
   return left_operand;
