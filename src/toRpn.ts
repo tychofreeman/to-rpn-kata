@@ -59,18 +59,18 @@ class Tokenizer {
   }
 }
 
-function push(held: string, operator: string): string {
-  return operator + held;
+function push(held: string[], operator: string): string[] {
+  return [...held, operator];
 }
 
-function empty(): string {
-  return "";
+function empty(): string[] {
+  return [];
 }
 
-function top(held: string): string {
-  return held[0];
+function top(held: string[]): string {
+  return held[held.length - 1];
 }
 
-function written(held: string): string {
-  return held;
+function written(held: string[]): string {
+  return held.toReversed().join("");
 }
