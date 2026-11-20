@@ -4,7 +4,7 @@ export function toRpn(s: string): string {
   let pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
-    if (pending.top()?.text === '+' && operator.text === '*') {
+    if (pending.yields_to(operator)) {
       pending = pending.push(operator);
     } else {
       left_operand += pending.written();
@@ -76,6 +76,10 @@ class OperatorStack {
 
   written(): string {
     return this.held.toReversed().map((operator) => operator.text).join("");
+  }
+
+  yields_to(operator: Operator): boolean {
+    return this.top()?.text === '+' && operator.text === '*';
   }
 }
 
