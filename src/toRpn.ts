@@ -81,7 +81,8 @@ class OperatorStack {
   }
 
   yields_to(operator: Operator): boolean {
-    return this.top()?.text === '+' && operator.text === '*';
+    const top = this.top();
+    return top !== undefined && top.precedence() < operator.precedence();
   }
 
   has_any(): boolean {
@@ -107,5 +108,8 @@ class Token {
 class Operator extends Token {
   is_operator(): boolean {
     return true;
+  }
+  precedence(): number {
+    return this.text === '*' || this.text === '/' ? 2 : 1;
   }
 }

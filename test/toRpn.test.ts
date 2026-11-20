@@ -25,7 +25,7 @@ describe("toRpn", () => {
   it("applies a multiplication before the addition it follows", () => {
     expect(toRpn("1 + 2 * 3")).toBe("1 2 3*+");
   });
-  it.skip("applies a multiplication and a division from left to right before an addition", () => {
+  it("applies a multiplication and a division from left to right before an addition", () => {
     expect(toRpn("1 + 2 * 3 / 4")).toBe("1 2 3* 4/+");
   });
   it.skip("converts a parenthesized infix expression to RPN", () => {
