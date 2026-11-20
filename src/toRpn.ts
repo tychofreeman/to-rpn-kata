@@ -18,9 +18,9 @@ class Tokenizer {
     if (!is_number) {
       return this.read_one();
     }
-    do {
+    while (this.is_digit()) {
       token += this.read_one();
-    } while (is_number && this.is_digit());
+    }
     return token;
   }
   private i = 0;
