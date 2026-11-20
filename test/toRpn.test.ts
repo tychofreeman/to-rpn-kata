@@ -64,10 +64,10 @@ describe("toRpn", () => {
   it("reads a number with a decimal point", () => {
     expect(toRpn("1.5 + 2")).toBe("1.5 2+");
   });
-  it("reads a minus sign directly before a number as part of it", () => {
-    expect(toRpn("-1 + 2")).toBe("-1 2+");
+  it("writes a minus sign before a number as CHS after it", () => {
+    expect(toRpn("-1 + 2")).toBe("1CHS 2+");
   });
   it("tells a subtraction from the sign of the number after it", () => {
-    expect(toRpn("1 - -2.5")).toBe("1 -2.5-");
+    expect(toRpn("1 - -2.5")).toBe("1 2.5CHS-");
   });
 });

@@ -8,7 +8,11 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
   const pending = empty();
   while (true) {
     let operand: string;
-    const token = operand_token(tokenizer);
+    let token = operand_token(tokenizer);
+    while (token.text === '-') {
+      pending.push(new Operator("CHS", token.position));
+      token = operand_token(tokenizer);
+    }
     if (token.text === '(') {
       operand = expression(tokenizer, token.position);
     } else if (token.is_number()) {
@@ -46,7 +50,7 @@ function operand_token(tokenizer: Tokenizer) {
   if (tokenizer.end()) {
     throw new Error('expected a number or "(" but reached the end');
   }
-  const token = tokenizer.next_operand();
+  const token = tokenizer.next_token();
   return token;
 }
 
@@ -98,18 +102,6 @@ class Tokenizer {
     this.skip_whitespace();
     const position = this.i;
     const token = this.is_digit() ? new Token(this.read_number(), position) : token_of(this.read_one(), position);
-    this.skip_whitespace();
-    return token;
-  }
-
-  next_operand(): Token {
-    this.skip_whitespace();
-    if (this.s[this.i] !== '-' || !/[0-9]/.test(this.s[this.i + 1])) {
-      return this.next_token();
-    }
-    const position = this.i;
-    const sign = this.read_one();
-    const token = new Token(sign + this.read_number(), position);
     this.skip_whitespace();
     return token;
   }
@@ -173,7 +165,7 @@ class Token {
     return false;
   }
   is_number(): boolean {
-    return /^-?[0-9]+(\.[0-9]+)?$/.test(this.text);
+    return /^[0-9]+(\.[0-9]+)?$/.test(this.text);
   }
 }
 
@@ -199,7 +191,8 @@ const operators: Record<string, OperatorFacts> = {
   '-': { precedence: 1, groups_from_right: false },
   '*': { precedence: 2, groups_from_right: false },
   '/': { precedence: 2, groups_from_right: false },
-  '^': { precedence: 3, groups_from_right: true },
+  'CHS': { precedence: 3, groups_from_right: true },
+  '^': { precedence: 4, groups_from_right: true },
 };
 
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
