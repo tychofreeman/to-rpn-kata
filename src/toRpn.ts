@@ -1,19 +1,19 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   let left_operand = tokenizer.next_token();
-  let pending = "";
+  let pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
-    if (pending === '+' && operator === '*') {
-      pending = operator + pending;
+    if (top(pending) === '+' && operator === '*') {
+      pending = push(pending, operator);
     } else {
-      left_operand += pending;
-      pending = operator;
+      left_operand += written(pending);
+      pending = push(empty(), operator);
     }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand;
   }
-  left_operand += pending;
+  left_operand += written(pending);
   return left_operand;
 }
 
@@ -57,4 +57,20 @@ class Tokenizer {
   is_whitespace() {
     return ' ' === this.s[this.i];
   }
+}
+
+function push(held: string, operator: string): string {
+  return operator + held;
+}
+
+function empty(): string {
+  return "";
+}
+
+function top(held: string): string {
+  return held[0];
+}
+
+function written(held: string): string {
+  return held;
 }
