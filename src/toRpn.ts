@@ -1,12 +1,12 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
-  const left_operand = tokenizer.next_token();
-  if (tokenizer.end()) {
-    return left_operand;
+  let left_operand = tokenizer.next_token();
+  if (!tokenizer.end()) {
+    const operator = tokenizer.next_token();
+    const right_operand = tokenizer.next_token();
+    left_operand += ' ' + right_operand + operator;
   }
-  const operator = tokenizer.next_token();
-  const right_operand = tokenizer.next_token();
-  return left_operand + ' ' + right_operand + operator;
+  return left_operand;
 }
 
 class Tokenizer {
