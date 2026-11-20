@@ -1,26 +1,25 @@
 export function toRpn(s: string): Calculator {
   const tokenizer = new Tokenizer(s);
-  return new Calculator(expression(tokenizer, undefined));
+  const calculator = new Calculator();
+  expression(tokenizer, undefined, calculator);
+  return calculator;
 }
 
-function expression(tokenizer: Tokenizer, opened_at: number | undefined): string {
-  let rpn = "";
+function expression(tokenizer: Tokenizer, opened_at: number | undefined, calculator: Calculator): void {
   const pending = empty();
   while (true) {
-    let operand: string;
     let token = operand_token(tokenizer);
     while (token.text === '-') {
       pending.push(new Operator("CHS", token.position));
       token = operand_token(tokenizer);
     }
     if (token.text === '(') {
-      operand = expression(tokenizer, token.position);
+      expression(tokenizer, token.position, calculator);
     } else if (token.is_number()) {
-      operand = token.text;
+      calculator.enter(token.text);
     } else {
       throw new Error(`expected a number or "(" but found "${token.text}" at position ${token.position}`);
     }
-    rpn += (rpn === "" ? "" : " ") + operand;
     if (tokenizer.end()) {
       if (opened_at !== undefined) {
         throw new Error(`expected ")" to close the "(" at position ${opened_at} but reached the end`);
@@ -38,12 +37,11 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined): string
       throw new Error(`expected an operator but found "${operator.text}" at position ${operator.position}`);
     }
     while (pending.has_any() && !pending.yields_to(operator)) {
-      rpn += pending.pop().text;
+      calculator.press(pending.pop().text);
     }
     pending.push(operator);
   }
-  rpn += pending.written();
-  return rpn;
+  calculator.press(pending.written());
 }
 
 function operand_token(tokenizer: Tokenizer) {
@@ -202,7 +200,15 @@ function token_of(text: string, position: number): Token {
 }
 
 export class Calculator {
-  constructor(private readonly keys: string) {}
+  private keys = "";
+
+  enter(number: string): void {
+    this.keys += (this.keys === "" ? "" : " ") + number;
+  }
+
+  press(operators: string): void {
+    this.keys += operators;
+  }
 
   toString(): string {
     return this.keys;
