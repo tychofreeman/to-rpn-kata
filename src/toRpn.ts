@@ -3,12 +3,12 @@ export function toRpn(s: string): string {
   let left_operand = tokenizer.next_token().text;
   let pending = empty();
   while (!tokenizer.end()) {
-    const operator = tokenizer.next_token();
-    if (pending.top() === '+' && operator.text === '*') {
-      pending = pending.push(operator.text);
+    const operator = tokenizer.next_token() as Operator;
+    if (pending.top()?.text === '+' && operator.text === '*') {
+      pending = pending.push(operator);
     } else {
       left_operand += pending.written();
-      pending = empty().push(operator.text);
+      pending = empty().push(operator);
     }
     const right_operand = tokenizer.next_token();
     left_operand += ' ' + right_operand.text;
@@ -64,18 +64,18 @@ function empty(): OperatorStack {
 }
 
 class OperatorStack {
-  constructor(readonly held: string[]) {}
+  constructor(readonly held: Operator[]) {}
 
-  top(): string {
+  top(): Operator | undefined {
     return this.held[this.held.length - 1];
   }
 
-  push(operator: string): OperatorStack {
+  push(operator: Operator): OperatorStack {
     return new OperatorStack([...this.held, operator]);
   }
 
   written(): string {
-    return this.held.toReversed().join("");
+    return this.held.toReversed().map((operator) => operator.text).join("");
   }
 }
 
