@@ -13,8 +13,8 @@ function expression(tokenizer: Tokenizer) {
   }
   const pending = empty();
   while (!tokenizer.end()) {
-    const operator = tokenizer.next_token() as Operator;
-    if (operator.text === ')') {
+    const operator = tokenizer.next_token();
+    if (!operator.is_operator()) {
       break;
     }
     while (pending.has_any() && !pending.yields_to(operator)) {
@@ -70,7 +70,7 @@ class Tokenizer {
 
   next_token(): Token {
     this.skip_whitespace();
-    const token = this.is_digit() ? new Token(this.read_number()) : new Operator(this.read_one());
+    const token = this.is_digit() ? new Token(this.read_number()) : token_of(this.read_one());
     this.skip_whitespace();
     return token;
   }
@@ -128,7 +128,7 @@ class Token {
     this.text = text;
   }
   readonly text: string;
-  is_operator(): boolean {
+  is_operator(): this is Operator {
     return false;
   }
 }
@@ -139,7 +139,7 @@ class Operator extends Token {
     super(text);
     this.facts = operators[text];
   }
-  is_operator(): boolean {
+  is_operator(): this is Operator {
     return true;
   }
   precedence(): number {
@@ -159,3 +159,7 @@ const operators: Record<string, OperatorFacts> = {
 };
 
 type OperatorFacts = { precedence: number; groups_from_right: boolean };
+
+function token_of(text: string): Token {
+  return text in operators ? new Operator(text) : new Token(text);
+}
