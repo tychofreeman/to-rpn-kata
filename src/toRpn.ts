@@ -1,18 +1,18 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
-  let left_operand = tokenizer.next_token().text;
+  let rpn = tokenizer.next_token().text;
   const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token() as Operator;
     if (!pending.yields_to(operator)) {
-      left_operand += pending.written();
+      rpn += pending.written();
     }
     pending.push(operator);
     const right_operand = tokenizer.next_token();
-    left_operand += ' ' + right_operand.text;
+    rpn += ' ' + right_operand.text;
   }
-  left_operand += pending.written();
-  return left_operand;
+  rpn += pending.written();
+  return rpn;
 }
 
 class Tokenizer {
