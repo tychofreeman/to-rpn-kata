@@ -13,10 +13,14 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    while (this.is_whitespace()) this.i++;
+    this.skip_whitespace();
     const token = this.is_digit() ? this.read_number() : this.read_one();
-    while (this.is_whitespace()) this.i++;
+    this.skip_whitespace();
     return token;
+  }
+
+  private skip_whitespace() {
+    while (this.is_whitespace()) this.i++;
   }
 
   private read_number() {
