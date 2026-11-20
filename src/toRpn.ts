@@ -3,7 +3,7 @@ export function toRpn(s: string): string {
   return expression(tokenizer);
 }
 
-function expression(tokenizer: Tokenizer) {
+function expression(tokenizer: Tokenizer): string {
   let rpn: string;
   const token = tokenizer.next_token();
   if (token.text === '(') {
@@ -54,17 +54,17 @@ class Tokenizer {
     return this.i >= this.s.length;
   }
 
-  is_digit() {
+  private is_digit() {
     return /[0-9]/.test(this.s[this.i]);
   }
 
-  read_one() {
+  private read_one() {
     const char = this.s[this.i];
     this.i++;
     return char;
   }
 
-  is_whitespace() {
+  private is_whitespace() {
     return ' ' === this.s[this.i];
   }
 
