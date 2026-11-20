@@ -13,7 +13,7 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    if (' ' === this.s[this.i]) this.i++;
+    if (this.is_whitespace()) this.i++;
     if (!this.is_digit()) {
       return this.read_one();
     }
@@ -41,5 +41,9 @@ class Tokenizer {
     const char = this.s[this.i];
     this.i++;
     return char;
+  }
+
+  is_whitespace() {
+    return ' ' === this.s[this.i];
   }
 }
