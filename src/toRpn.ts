@@ -119,4 +119,5 @@ const precedences: Record<string, number> = {
   '-': 1,
   '*': 2,
   '/': 2,
+  '^': 3,
 };
