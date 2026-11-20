@@ -13,11 +13,16 @@ class Tokenizer {
   constructor(readonly s: string) {}
 
   next_token() {
-    let token = "";
     const is_number = this.is_digit();
     if (!is_number) {
       return this.read_one();
     }
+    let token = this.read_number();
+    return token;
+  }
+
+  private read_number() {
+    let token = "";
     while (this.is_digit()) {
       token += this.read_one();
     }
