@@ -4,13 +4,15 @@ export function toRpn(s: string): string {
 }
 
 function expression(tokenizer: Tokenizer): string {
-  let rpn: string;
+  let rpn = "";
+  let operand: string;
   const token = tokenizer.next_token();
   if (token.text === '(') {
-    rpn = expression(tokenizer);
+    operand = expression(tokenizer);
   } else {
-    rpn = token.text;
+    operand = token.text;
   }
+  rpn += (rpn === "" ? "" : " ") + operand;
   const pending = empty();
   while (!tokenizer.end()) {
     const operator = tokenizer.next_token();
@@ -28,7 +30,7 @@ function expression(tokenizer: Tokenizer): string {
     } else {
       operand = token.text;
     }
-    rpn += ' ' + operand;
+    rpn += (rpn === "" ? "" : " ") + operand;
   }
   rpn += pending.written();
   return rpn;
