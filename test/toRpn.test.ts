@@ -67,4 +67,7 @@ describe("toRpn", () => {
   it("reads a minus sign directly before a number as part of it", () => {
     expect(toRpn("-1 + 2")).toBe("-1 2+");
   });
+  it("tells a subtraction from the sign of the number after it", () => {
+    expect(toRpn("1 - -2.5")).toBe("1 -2.5-");
+  });
 });
