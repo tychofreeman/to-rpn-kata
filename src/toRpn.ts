@@ -9,11 +9,11 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
   const pending = empty();
   while (true) {
     let token = operand_token(tokenizer);
-    while (token.text === '-') {
+    while (token.is_minus()) {
       pending.push(new Operator("CHS", token.position));
       token = operand_token(tokenizer);
     }
-    if (token.text === '(') {
+    if (token.opens_group()) {
       expression(tokenizer, token.position, calculator);
     } else if (token.is_number()) {
       calculator.enter(token);
@@ -27,7 +27,7 @@ function expression(tokenizer: Tokenizer, opened_at: number | undefined, calcula
       break;
     }
     const operator = tokenizer.next_token();
-    if (operator.text === ')') {
+    if (operator.closes_group()) {
       if (opened_at === undefined) {
         throw new Error(`found ")" at position ${operator.position} with no "(" to close`);
       }
@@ -158,6 +158,18 @@ class Token {
   }
   is_number(): boolean {
     return /^[0-9]+(\.[0-9]+)?$/.test(this.text);
+  }
+
+  is_minus(): boolean {
+    return this.text === '-';
+  }
+
+  opens_group(): boolean {
+    return this.text === '(';
+  }
+
+  closes_group(): boolean {
+    return this.text === ')';
   }
 }
 
