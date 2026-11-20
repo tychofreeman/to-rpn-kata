@@ -1,8 +1,8 @@
 export function toRpn(s: string): string {
   const tokenizer = new Tokenizer(s);
   const left_operand = tokenizer.next_token();
-  const operator = s[1];
-  const right_operand = s[2];
+  const operator = tokenizer.next_token();
+  const right_operand = tokenizer.next_token();
   if (s.length === 1) {
     return left_operand;
   }
